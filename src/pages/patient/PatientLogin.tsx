@@ -29,10 +29,9 @@ const PatientLogin = () => {
     setLoading(true);
     try {
       await login(formData.email, formData.password, "patient");
-      toast.success("Login successful!");
       navigate("/patient/dashboard");
     } catch (error) {
-      toast.error("Invalid credentials");
+      // Error is already handled by axios interceptor
     } finally {
       setLoading(false);
     }

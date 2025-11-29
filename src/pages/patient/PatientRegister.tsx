@@ -68,10 +68,9 @@ const PatientRegister = () => {
     setLoading(true);
     try {
       await register(formData);
-      toast.success("Registration successful!");
       navigate("/patient/dashboard");
     } catch (error) {
-      toast.error("Registration failed. Please try again.");
+      // Error is already handled by axios interceptor
     } finally {
       setLoading(false);
     }

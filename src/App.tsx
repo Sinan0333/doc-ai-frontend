@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/context/AuthContext";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import PatientRegister from "./pages/patient/PatientRegister";
@@ -12,7 +13,14 @@ import PatientDashboard from "./pages/patient/PatientDashboard";
 import DoctorLogin from "./pages/doctor/DoctorLogin";
 import DoctorDashboard from "./pages/doctor/DoctorDashboard";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -27,11 +35,25 @@ const App = () => (
             {/* Patient Routes */}
             <Route path="/patient/register" element={<PatientRegister />} />
             <Route path="/patient/login" element={<PatientLogin />} />
-            <Route path="/patient/dashboard" element={<PatientDashboard />} />
+            <Route 
+              path="/patient/dashboard" 
+              element={
+                <ProtectedRoute requiredRole="patient">
+                  <PatientDashboard />
+                </ProtectedRoute>
+              } 
+            />
             
             {/* Doctor Routes */}
             <Route path="/doctor/login" element={<DoctorLogin />} />
-            <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
+            <Route 
+              path="/doctor/dashboard" 
+              element={
+                <ProtectedRoute requiredRole="doctor">
+                  <DoctorDashboard />
+                </ProtectedRoute>
+              } 
+            />
             
             {/* Redirect /patient and /doctor to their login pages */}
             <Route path="/patient" element={<Navigate to="/patient/login" replace />} />

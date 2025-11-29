@@ -1,4 +1,5 @@
 import { useAuth } from "@/context/AuthContext";
+import { useDoctorDashboard } from "@/hooks/useDoctor";
 import Sidebar from "@/components/Sidebar";
 import StatCard from "@/components/StatCard";
 import { Button } from "@/components/ui/button";
@@ -7,30 +8,9 @@ import { Users, FileText, AlertTriangle, TrendingUp } from "lucide-react";
 
 const DoctorDashboard = () => {
   const { user } = useAuth();
+  const { data: dashboardData, isLoading } = useDoctorDashboard();
 
-  const recentPatients = [
-    {
-      id: 1,
-      name: "John Doe",
-      lastVisit: "2024-01-15",
-      status: "Stable",
-      condition: "Diabetes",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      lastVisit: "2024-01-14",
-      status: "Critical",
-      condition: "Hypertension",
-    },
-    {
-      id: 3,
-      name: "Robert Johnson",
-      lastVisit: "2024-01-13",
-      status: "Stable",
-      condition: "Arthritis",
-    },
-  ];
+  const recentPatients = dashboardData?.dashboard.recentPatients || [];
 
   const alerts = [
     {
@@ -55,43 +35,53 @@ const DoctorDashboard = () => {
         <div className="max-w-7xl mx-auto space-y-8">
           {/* Welcome Banner */}
           <div className="bg-gradient-to-r from-primary to-secondary rounded-2xl p-8 text-primary-foreground">
-            <h1 className="text-3xl font-bold mb-2">Welcome, {user?.name}!</h1>
+            <h1 className="text-3xl font-bold mb-2">Welcome, {user?.fullName || user?.name}!</h1>
             <p className="text-primary-foreground/90">
-              You have 5 pending reviews and 2 urgent alerts today.
+              {dashboardData?.dashboard.pendingReports 
+                ? `You have ${dashboardData.dashboard.pendingReports} pending reviews and ${dashboardData.dashboard.abnormalCases} urgent alerts today.`
+                : "Your dashboard is ready."}
             </p>
           </div>
 
-          {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <StatCard
-              title="Total Patients"
-              value="156"
-              icon={Users}
-              trend="+12 this month"
-              trendUp={true}
-            />
-            <StatCard
-              title="Reports Awaiting"
-              value="23"
-              icon={FileText}
-              trend="5 urgent"
-              trendUp={false}
-            />
-            <StatCard
-              title="Abnormal Cases"
-              value="8"
-              icon={AlertTriangle}
-              trend="Needs attention"
-              trendUp={false}
-            />
-            <StatCard
-              title="Recovery Rate"
-              value="94%"
-              icon={TrendingUp}
-              trend="+3% vs last month"
-              trendUp={true}
-            />
-          </div>
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            </div>
+          ) : (
+            <>
+              {/* Stats Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <StatCard
+                  title="Total Patients"
+                  value={dashboardData?.dashboard.totalPatients?.toString() || "0"}
+                  icon={Users}
+                  trend="+12 this month"
+                  trendUp={true}
+                />
+                <StatCard
+                  title="Reports Awaiting"
+                  value={dashboardData?.dashboard.pendingReports?.toString() || "0"}
+                  icon={FileText}
+                  trend="5 urgent"
+                  trendUp={false}
+                />
+                <StatCard
+                  title="Abnormal Cases"
+                  value={dashboardData?.dashboard.abnormalCases?.toString() || "0"}
+                  icon={AlertTriangle}
+                  trend="Needs attention"
+                  trendUp={false}
+                />
+                <StatCard
+                  title="Recovery Rate"
+                  value="94%"
+                  icon={TrendingUp}
+                  trend="+3% vs last month"
+                  trendUp={true}
+                />
+              </div>
+            </>
+          )}
 
           {/* Alerts Section */}
           <Card className="p-6">
@@ -135,13 +125,7 @@ const DoctorDashboard = () => {
                       Patient Name
                     </th>
                     <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">
-                      Last Visit
-                    </th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">
-                      Status
-                    </th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">
-                      Condition
+                      Last Report
                     </th>
                     <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">
                       Action
@@ -149,29 +133,25 @@ const DoctorDashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {recentPatients.map((patient) => (
-                    <tr key={patient.id} className="border-b border-border hover:bg-muted/50">
-                      <td className="py-4 px-4">
-                        <span className="font-medium text-foreground">{patient.name}</span>
-                      </td>
-                      <td className="py-4 px-4 text-muted-foreground">{patient.lastVisit}</td>
-                      <td className="py-4 px-4">
-                        <span
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            patient.status === "Stable"
-                              ? "bg-success/10 text-success"
-                              : "bg-destructive/10 text-destructive"
-                          }`}
-                        >
-                          {patient.status}
-                        </span>
-                      </td>
-                      <td className="py-4 px-4 text-muted-foreground">{patient.condition}</td>
-                      <td className="py-4 px-4">
-                        <Button variant="ghost" size="sm">View Records</Button>
+                  {recentPatients.length > 0 ? (
+                    recentPatients.map((patient) => (
+                      <tr key={patient.id} className="border-b border-border hover:bg-muted/50">
+                        <td className="py-4 px-4">
+                          <span className="font-medium text-foreground">{patient.name}</span>
+                        </td>
+                        <td className="py-4 px-4 text-muted-foreground">{patient.lastReport}</td>
+                        <td className="py-4 px-4">
+                          <Button variant="ghost" size="sm">View Records</Button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={3} className="py-8 text-center text-muted-foreground">
+                        No recent patients
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

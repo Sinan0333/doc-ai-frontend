@@ -1,11 +1,6 @@
-import { createContext, useContext, useState, ReactNode } from "react";
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: "patient" | "doctor";
-}
+import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { authService, RegisterData, LoginData, User } from "@/services/auth.service";
+import { toast } from "sonner";
 
 interface AuthContextType {
   user: User | null;
@@ -13,46 +8,80 @@ interface AuthContextType {
   register: (userData: any) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
+  isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load user from localStorage on mount
+  useEffect(() => {
+    const loadUser = () => {
+      try {
+        const storedUser = localStorage.getItem("user");
+        const token = localStorage.getItem("token");
+        
+        if (storedUser && token) {
+          const userData = JSON.parse(storedUser);
+          setUser(userData);
+        }
+      } catch (error) {
+        console.error("Error loading user:", error);
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadUser();
+  }, []);
 
   const login = async (email: string, password: string, role: "patient" | "doctor") => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    
-    const mockUser: User = {
-      id: "1",
-      name: role === "patient" ? "John Doe" : "Dr. Sarah Smith",
-      email,
-      role,
-    };
-    
-    setUser(mockUser);
-    localStorage.setItem("user", JSON.stringify(mockUser));
+    try {
+      const loginData: LoginData = { email, password };
+      const response = role === "patient" 
+        ? await authService.loginPatient(loginData)
+        : await authService.loginDoctor(loginData);
+      
+      setUser(response.user);
+      localStorage.setItem("user", JSON.stringify(response.user));
+      localStorage.setItem("token", response.token);
+    } catch (error: any) {
+      // Error is handled by axios interceptor
+      throw error;
+    }
   };
 
   const register = async (userData: any) => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    
-    const mockUser: User = {
-      id: "1",
-      name: userData.fullName,
-      email: userData.email,
-      role: "patient",
-    };
-    
-    setUser(mockUser);
-    localStorage.setItem("user", JSON.stringify(mockUser));
+    try {
+      const registerData: RegisterData = {
+        fullName: userData.fullName,
+        email: userData.email,
+        password: userData.password,
+        age: userData.age ? parseInt(userData.age) : undefined,
+        gender: userData.gender,
+        phone: userData.phone,
+        address: userData.address,
+      };
+      
+      const response = await authService.register(registerData);
+      setUser(response.user);
+      localStorage.setItem("user", JSON.stringify(response.user));
+      localStorage.setItem("token", response.token);
+    } catch (error: any) {
+      // Error is handled by axios interceptor
+      throw error;
+    }
   };
 
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
   };
 
   return (
@@ -63,6 +92,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         register,
         logout,
         isAuthenticated: !!user,
+        isLoading,
       }}
     >
       {children}

@@ -1,4 +1,5 @@
 import { useAuth } from "@/context/AuthContext";
+import { usePatientDashboard } from "@/hooks/usePatient";
 import Sidebar from "@/components/Sidebar";
 import StatCard from "@/components/StatCard";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,7 @@ import { FileText, AlertTriangle, Calendar, Upload, History, BarChart3 } from "l
 
 const PatientDashboard = () => {
   const { user } = useAuth();
+  const { data: dashboardData, isLoading } = usePatientDashboard();
 
   const recentReports = [
     {
@@ -40,34 +42,42 @@ const PatientDashboard = () => {
         <div className="max-w-7xl mx-auto space-y-8">
           {/* Welcome Banner */}
           <div className="bg-gradient-to-r from-primary to-secondary rounded-2xl p-8 text-primary-foreground">
-            <h1 className="text-3xl font-bold mb-2">Welcome back, {user?.name}!</h1>
+            <h1 className="text-3xl font-bold mb-2">Welcome back, {user?.fullName || user?.name}!</h1>
             <p className="text-primary-foreground/90">
               Your health dashboard is ready. View your reports and track your medical journey.
             </p>
           </div>
 
-          {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <StatCard
-              title="Total Reports"
-              value="12"
-              icon={FileText}
-              trend="+2 this month"
-              trendUp={true}
-            />
-            <StatCard
-              title="Risk Alerts"
-              value="2"
-              icon={AlertTriangle}
-              trend="Needs attention"
-              trendUp={false}
-            />
-            <StatCard
-              title="Last Report"
-              value="5 days ago"
-              icon={Calendar}
-            />
-          </div>
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            </div>
+          ) : (
+            <>
+              {/* Stats Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <StatCard
+                  title="Total Reports"
+                  value={dashboardData?.dashboard.totalReports?.toString() || "0"}
+                  icon={FileText}
+                  trend="+2 this month"
+                  trendUp={true}
+                />
+                <StatCard
+                  title="Risk Alerts"
+                  value={dashboardData?.dashboard.riskAlerts?.toString() || "0"}
+                  icon={AlertTriangle}
+                  trend="Needs attention"
+                  trendUp={false}
+                />
+                <StatCard
+                  title="Last Report"
+                  value={dashboardData?.dashboard.lastReportDate ? new Date(dashboardData.dashboard.lastReportDate).toLocaleDateString() : "No reports"}
+                  icon={Calendar}
+                />
+              </div>
+            </>
+          )}
 
           {/* Quick Actions */}
           <Card className="p-6">
