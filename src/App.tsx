@@ -10,6 +10,7 @@ import NotFound from "./pages/NotFound";
 import PatientRegister from "./pages/patient/PatientRegister";
 import PatientLogin from "./pages/patient/PatientLogin";
 import PatientDashboard from "./pages/patient/PatientDashboard";
+import UploadReport from "./pages/patient/UploadReport";
 import DoctorLogin from "./pages/doctor/DoctorLogin";
 import DoctorDashboard from "./pages/doctor/DoctorDashboard";
 
@@ -40,6 +41,14 @@ const App = () => (
               element={
                 <ProtectedRoute requiredRole="patient">
                   <PatientDashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/patient/upload" 
+              element={
+                <ProtectedRoute requiredRole="patient">
+                  <UploadReport />
                 </ProtectedRoute>
               } 
             />

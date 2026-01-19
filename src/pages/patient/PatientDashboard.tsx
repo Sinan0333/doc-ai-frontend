@@ -5,7 +5,6 @@ import StatCard from "@/components/StatCard";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { FileText, AlertTriangle, Calendar, Upload, History, BarChart3 } from "lucide-react";
-import ReportUpload from "@/components/ReportUpload";
 
 const PatientDashboard = () => {
   const { user } = useAuth();
@@ -81,7 +80,7 @@ const PatientDashboard = () => {
           )}
 
           {/* Quick Actions / Upload */}
-          <ReportUpload />
+          {/* Moved to separate page */}
 
           {/* Previous Quick Actions - Commented out or Removed for now as we focus on Upload */}
           {/* <Card className="p-6"> ... </Card> */ }
