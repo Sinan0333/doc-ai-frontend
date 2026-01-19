@@ -12,6 +12,7 @@ import PatientLogin from "./pages/patient/PatientLogin";
 import PatientDashboard from "./pages/patient/PatientDashboard";
 import UploadReport from "./pages/patient/UploadReport";
 import History from "./pages/patient/History";
+import Profile from "./pages/patient/Profile";
 import DoctorLogin from "./pages/doctor/DoctorLogin";
 import DoctorDashboard from "./pages/doctor/DoctorDashboard";
 
@@ -52,6 +53,14 @@ const App = () => (
                   <UploadReport />
                 </ProtectedRoute>
               }
+            />
+            <Route 
+              path="/patient/profile" 
+              element={
+                <ProtectedRoute requiredRole="patient">
+                  <Profile />
+                </ProtectedRoute>
+              } 
             />
             <Route 
               path="/patient/history" 

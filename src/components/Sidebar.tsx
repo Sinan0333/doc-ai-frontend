@@ -1,14 +1,16 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { 
-  LayoutDashboard, 
-  Upload, 
-  History, 
-  User, 
-  LogOut,
-  Users,
-  BarChart3,
+import {
+  Activity,
   AlertCircle,
-  Activity
+  BarChart3,
+  FileText,
+  History,
+  LayoutDashboard,
+  LogOut,
+  Settings,
+  Upload,
+  User,
+  Users,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";

@@ -20,6 +20,10 @@ export interface User {
   fullName: string;
   email: string;
   role: 'patient' | 'doctor' | 'admin';
+  phone?: string;
+  gender?: string;
+  age?: number;
+  address?: string;
 }
 
 export interface AuthResponse {
@@ -69,7 +73,7 @@ export const authService = {
   // Get current user (for session restore)
   getCurrentUser: async (): Promise<User> => {
     const response = await api.get<ApiResponse<User>>('/auth/me');
-    return response.data.data || response.data as User;
+    return response.data.data || response.data as unknown as User;
   },
 };
 
