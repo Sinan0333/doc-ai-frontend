@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ChevronLeft, ChevronRight, FileText, Search } from "lucide-react";
+import ReportDetailModal from "@/components/ReportDetailModal";
 
 interface Report {
   _id: string;
@@ -49,6 +50,8 @@ const History = () => {
     pages: 1,
   });
   const [loading, setLoading] = useState(false);
+  const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   
   // Filters
   const [reportType, setReportType] = useState("all");
@@ -192,7 +195,16 @@ const History = () => {
                           {format(new Date(report.createdAt), "MMM dd, yyyy")}
                         </TableCell>
                         <TableCell className="text-right">
-                          <Button variant="ghost" size="sm">View</Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => {
+                                setSelectedReportId(report._id);
+                                setIsModalOpen(true);
+                            }}
+                          >
+                            View
+                          </Button>
                         </TableCell>
                       </TableRow>
                     ))
@@ -226,6 +238,11 @@ const History = () => {
           </Card>
         </div>
       </main>
+      <ReportDetailModal 
+        reportId={selectedReportId} 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+      />
     </div>
   );
 };
