@@ -15,6 +15,7 @@ import History from "./pages/patient/History";
 import Profile from "./pages/patient/Profile";
 import DoctorLogin from "./pages/doctor/DoctorLogin";
 import DoctorDashboard from "./pages/doctor/DoctorDashboard";
+import PatientList from "./pages/doctor/PatientList";
 import { UnProtectedRoute } from "./components/UnProtectedRoute";
 
 const queryClient = new QueryClient({
@@ -93,6 +94,14 @@ const App = () => (
               element={
                 <ProtectedRoute requiredRole="doctor">
                   <DoctorDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/doctor/patients"
+              element={
+                <ProtectedRoute requiredRole="doctor">
+                  <PatientList />
                 </ProtectedRoute>
               }
             />
