@@ -5,6 +5,7 @@ import StatCard from "@/components/StatCard";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { FileText, AlertTriangle, Calendar, Upload, History, BarChart3 } from "lucide-react";
+import ReportUpload from "@/components/ReportUpload";
 
 const PatientDashboard = () => {
   const { user } = useAuth();
@@ -42,7 +43,7 @@ const PatientDashboard = () => {
         <div className="max-w-7xl mx-auto space-y-8">
           {/* Welcome Banner */}
           <div className="bg-gradient-to-r from-primary to-secondary rounded-2xl p-8 text-primary-foreground">
-            <h1 className="text-3xl font-bold mb-2">Welcome back, {user?.fullName || user?.name}!</h1>
+            <h1 className="text-3xl font-bold mb-2">Welcome back, {user?.fullName}!</h1>
             <p className="text-primary-foreground/90">
               Your health dashboard is ready. View your reports and track your medical journey.
             </p>
@@ -79,33 +80,11 @@ const PatientDashboard = () => {
             </>
           )}
 
-          {/* Quick Actions */}
-          <Card className="p-6">
-            <h2 className="text-xl font-bold text-foreground mb-4">Quick Actions</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Button variant="outline" className="h-auto py-6 flex-col gap-2">
-                <Upload className="h-8 w-8 text-primary" />
-                <span className="font-semibold">Upload New Report</span>
-                <span className="text-xs text-muted-foreground">
-                  Add medical documents
-                </span>
-              </Button>
-              <Button variant="outline" className="h-auto py-6 flex-col gap-2">
-                <History className="h-8 w-8 text-primary" />
-                <span className="font-semibold">View Medical History</span>
-                <span className="text-xs text-muted-foreground">
-                  Access past reports
-                </span>
-              </Button>
-              <Button variant="outline" className="h-auto py-6 flex-col gap-2">
-                <BarChart3 className="h-8 w-8 text-primary" />
-                <span className="font-semibold">Compare Reports</span>
-                <span className="text-xs text-muted-foreground">
-                  Analyze trends
-                </span>
-              </Button>
-            </div>
-          </Card>
+          {/* Quick Actions / Upload */}
+          <ReportUpload />
+
+          {/* Previous Quick Actions - Commented out or Removed for now as we focus on Upload */}
+          {/* <Card className="p-6"> ... </Card> */ }
 
           {/* Recent Reports */}
           <Card className="p-6">
