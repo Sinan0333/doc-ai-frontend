@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import api from '@/lib/api';
 
 export default function ReportUpload() {
     const [file, setFile] = useState<File | null>(null);
@@ -42,7 +43,7 @@ export default function ReportUpload() {
         setIsLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.post('http://localhost:5000/api/report/upload', formData, {
+            const response = await api.post('/report/upload', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${token}`
