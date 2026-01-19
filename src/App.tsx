@@ -15,6 +15,7 @@ import History from "./pages/patient/History";
 import Profile from "./pages/patient/Profile";
 import DoctorLogin from "./pages/doctor/DoctorLogin";
 import DoctorDashboard from "./pages/doctor/DoctorDashboard";
+import { UnProtectedRoute } from "./components/UnProtectedRoute";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -34,17 +35,31 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            
+
             {/* Patient Routes */}
-            <Route path="/patient/register" element={<PatientRegister />} />
-            <Route path="/patient/login" element={<PatientLogin />} />
-            <Route 
-              path="/patient/dashboard" 
+            <Route
+              path="/patient/register"
+              element={
+                <UnProtectedRoute>
+                  <PatientRegister />
+                </UnProtectedRoute>
+              }
+            />
+            <Route
+              path="/patient/login"
+              element={
+                <UnProtectedRoute>
+                  <PatientLogin />
+                </UnProtectedRoute>
+              }
+            />
+            <Route
+              path="/patient/dashboard"
               element={
                 <ProtectedRoute requiredRole="patient">
                   <PatientDashboard />
                 </ProtectedRoute>
-              } 
+              }
             />
             <Route 
               path="/patient/upload" 
@@ -73,19 +88,25 @@ const App = () => (
             
             {/* Doctor Routes */}
             <Route path="/doctor/login" element={<DoctorLogin />} />
-            <Route 
-              path="/doctor/dashboard" 
+            <Route
+              path="/doctor/dashboard"
               element={
                 <ProtectedRoute requiredRole="doctor">
                   <DoctorDashboard />
                 </ProtectedRoute>
-              } 
+              }
             />
-            
+
             {/* Redirect /patient and /doctor to their login pages */}
-            <Route path="/patient" element={<Navigate to="/patient/login" replace />} />
-            <Route path="/doctor" element={<Navigate to="/doctor/login" replace />} />
-            
+            <Route
+              path="/patient"
+              element={<Navigate to="/patient/login" replace />}
+            />
+            <Route
+              path="/doctor"
+              element={<Navigate to="/doctor/login" replace />}
+            />
+
             {/* Catch-all route */}
             <Route path="*" element={<NotFound />} />
           </Routes>
