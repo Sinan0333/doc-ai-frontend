@@ -18,6 +18,7 @@ import DoctorDashboard from "./pages/doctor/DoctorDashboard";
 import PatientList from "./pages/doctor/PatientList";
 import PatientHistory from "./pages/doctor/PatientHistory";
 import ReviewRequests from "./pages/doctor/ReviewRequests";
+import ReviewReport from "./pages/doctor/ReviewReport";
 import { UnProtectedRoute } from "./components/UnProtectedRoute";
 
 const queryClient = new QueryClient({
@@ -120,6 +121,14 @@ const App = () => (
               element={
                 <ProtectedRoute requiredRole="doctor">
                   <ReviewRequests />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/doctor/review-requests/:reportId/review"
+              element={
+                <ProtectedRoute requiredRole="doctor">
+                  <ReviewReport />
                 </ProtectedRoute>
               }
             />

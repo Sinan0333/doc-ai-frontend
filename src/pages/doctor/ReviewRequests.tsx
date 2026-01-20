@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "@/components/Sidebar";
 import api from "@/lib/api";
 import {
@@ -18,13 +19,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import {
   ChevronLeft,
@@ -33,7 +27,6 @@ import {
   Calendar,
   Filter,
   ClipboardList,
-  User,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
@@ -80,8 +73,7 @@ const ReviewRequests = () => {
   });
   const [loading, setLoading] = useState(false);
   const [reportType, setReportType] = useState("all");
-  const [selectedRequest, setSelectedRequest] = useState<ReviewRequest | null>(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const navigate = useNavigate();
 
   const fetchReviewRequests = async (page = 1) => {
     setLoading(true);
@@ -119,9 +111,8 @@ const ReviewRequests = () => {
     }
   };
 
-  const handleViewDetails = (request: ReviewRequest) => {
-    setSelectedRequest(request);
-    setDialogOpen(true);
+  const handleReviewRequest = (reportId: string) => {
+    navigate(`/doctor/review-requests/${reportId}/review`);
   };
 
   return (
@@ -221,11 +212,11 @@ const ReviewRequests = () => {
                         </TableCell>
                         <TableCell className="text-right">
                           <Button
-                            variant="ghost"
+                            variant="default"
                             size="sm"
-                            onClick={() => handleViewDetails(request)}
+                            onClick={() => handleReviewRequest(request._id)}
                           >
-                            View Details
+                            Review
                           </Button>
                         </TableCell>
                       </TableRow>
@@ -262,77 +253,6 @@ const ReviewRequests = () => {
           </Card>
         </div>
       </main>
-
-      {/* Request Details Dialog */}
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>{selectedRequest?.reportName}</DialogTitle>
-            <DialogDescription>
-              Report Date: {selectedRequest && new Date(selectedRequest.reportDate).toLocaleDateString()}
-            </DialogDescription>
-          </DialogHeader>
-          {selectedRequest && (
-            <div className="space-y-4">
-              {/* Patient Information */}
-              <div className="border-b pb-4">
-                <h4 className="font-semibold mb-2 flex items-center gap-2">
-                  <User className="h-4 w-4" />
-                  Patient Information
-                </h4>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span className="text-muted-foreground">Name:</span>{" "}
-                    <span className="font-medium">{selectedRequest.patientId?.fullName}</span>
-                  </div>
-                  <div>
-                    <span className="text-muted-foreground">Email:</span>{" "}
-                    <span className="font-medium">{selectedRequest.patientId?.email}</span>
-                  </div>
-                  {selectedRequest.patientId?.phone && (
-                    <div>
-                      <span className="text-muted-foreground">Phone:</span>{" "}
-                      <span className="font-medium">{selectedRequest.patientId.phone}</span>
-                    </div>
-                  )}
-                  {selectedRequest.patientId?.age && selectedRequest.patientId?.gender && (
-                    <div>
-                      <span className="text-muted-foreground">Age/Gender:</span>{" "}
-                      <span className="font-medium">
-                        {selectedRequest.patientId.age} / {selectedRequest.patientId.gender}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Report Details */}
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="text-muted-foreground">Type:</span>{" "}
-                  <Badge variant="outline">{selectedRequest.reportType}</Badge>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">Requested On:</span>{" "}
-                  <span className="font-medium">
-                    {new Date(selectedRequest.createdAt).toLocaleDateString()}
-                  </span>
-                </div>
-              </div>
-
-              {/* AI Analysis Results */}
-              <div className="border-t pt-4">
-                <h4 className="font-semibold mb-2">AI Analysis Results</h4>
-                <div className="bg-muted/50 p-4 rounded-lg">
-                  <pre className="text-xs whitespace-pre-wrap font-mono">
-                    {JSON.stringify(selectedRequest.analyzedData, null, 2)}
-                  </pre>
-                </div>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
