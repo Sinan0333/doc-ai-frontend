@@ -3,6 +3,7 @@ import {
   Activity,
   AlertCircle,
   BarChart3,
+  ClipboardList,
   FileText,
   History,
   LayoutDashboard,
@@ -38,6 +39,7 @@ const Sidebar = ({ role }: SidebarProps) => {
   const doctorLinks = [
     { to: "/doctor/dashboard", icon: LayoutDashboard, label: "Dashboard" },
     { to: "/doctor/patients", icon: Users, label: "Patient List" },
+    { to: "/doctor/review-requests", icon: ClipboardList, label: "Review Requests" },
     { to: "/doctor/analytics", icon: BarChart3, label: "Analytics" },
     { to: "/doctor/alerts", icon: AlertCircle, label: "Alerts" },
   ];

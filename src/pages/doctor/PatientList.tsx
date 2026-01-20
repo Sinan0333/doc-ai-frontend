@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "@/components/Sidebar";
 import api from "@/lib/api";
 import {
@@ -42,6 +43,7 @@ const PatientList = () => {
   });
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
+  const navigate = useNavigate();
 
   const fetchPatients = async (page = 1) => {
     setLoading(true);
@@ -154,7 +156,13 @@ const PatientList = () => {
                            {new Date(patient.createdAt).toLocaleDateString()}
                         </TableCell>
                         <TableCell className="text-right">
-                          <Button variant="ghost" size="sm">View History</Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => navigate(`/doctor/patients/${patient._id}/history`)}
+                          >
+                            View History
+                          </Button>
                         </TableCell>
                       </TableRow>
                     ))
