@@ -11,6 +11,9 @@ export interface DoctorDashboard {
   pendingReports: number;
   abnormalCases: number;
   recentPatients: RecentPatient[];
+  monthlyStats: any[];
+  diagnosticStats: any[];
+  priorityAlerts: any[];
 }
 
 export interface DoctorDashboardResponse {
