@@ -5,34 +5,29 @@ import StatCard from "@/components/StatCard";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { FileText, AlertTriangle, Calendar, Upload, History, BarChart3 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer 
+} from 'recharts';
 
 const PatientDashboard = () => {
   const { user } = useAuth();
   const { data: dashboardData, isLoading } = usePatientDashboard();
+  const navigate = useNavigate();
 
-  const recentReports = [
-    {
-      id: 1,
-      name: "Blood Test Report",
-      date: "2024-01-15",
-      status: "Normal",
-      doctor: "Dr. Sarah Smith",
-    },
-    {
-      id: 2,
-      name: "X-Ray Chest",
-      date: "2024-01-10",
-      status: "Review Required",
-      doctor: "Dr. Michael Brown",
-    },
-    {
-      id: 3,
-      name: "MRI Scan",
-      date: "2024-01-05",
-      status: "Normal",
-      doctor: "Dr. Emily Davis",
-    },
-  ];
+  const recentReports = dashboardData?.dashboard.recentReports || [];
+  
+  // Format health trends for the chart
+  const trendData = dashboardData?.dashboard.healthTrends?.map((stat: any) => ({
+    name: new Date(2000, stat._id.month - 1).toLocaleString('default', { month: 'short' }),
+    count: stat.count
+  })) || [];
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -60,14 +55,14 @@ const PatientDashboard = () => {
                   title="Total Reports"
                   value={dashboardData?.dashboard.totalReports?.toString() || "0"}
                   icon={FileText}
-                  trend="+2 this month"
+                  trend="Uploaded to your account"
                   trendUp={true}
                 />
                 <StatCard
                   title="Risk Alerts"
                   value={dashboardData?.dashboard.riskAlerts?.toString() || "0"}
                   icon={AlertTriangle}
-                  trend="Needs attention"
+                  trend="Abnormal results"
                   trendUp={false}
                 />
                 <StatCard
@@ -76,97 +71,116 @@ const PatientDashboard = () => {
                   icon={Calendar}
                 />
               </div>
+
+              {/* Recent Reports */}
+              <Card className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-bold text-foreground">Recent Reports</h2>
+                  <Button onClick={() => navigate('/patient/history')} variant="ghost" size="sm">View All</Button>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-border">
+                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">
+                          Report Name
+                        </th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">
+                          Date
+                        </th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">
+                          Status
+                        </th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">
+                          Doctor
+                        </th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">
+                          Action
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {recentReports.length > 0 ? (
+                        recentReports.map((report) => (
+                          <tr key={report.id} className="border-b border-border hover:bg-muted/50">
+                            <td className="py-4 px-4">
+                              <div className="flex items-center gap-3">
+                                <div className="p-2 bg-primary/10 rounded-lg">
+                                  <FileText className="h-4 w-4 text-primary" />
+                                </div>
+                                <span className="font-medium text-foreground">{report.name}</span>
+                              </div>
+                            </td>
+                            <td className="py-4 px-4 text-muted-foreground">{report.date}</td>
+                            <td className="py-4 px-4">
+                              <span
+                                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                  report.status === "Normal"
+                                    ? "bg-success/10 text-success"
+                                    : "bg-destructive/10 text-destructive"
+                                }`}
+                              >
+                                {report.status}
+                              </span>
+                            </td>
+                            <td className="py-4 px-4 text-muted-foreground">{report.doctor}</td>
+                            <td className="py-4 px-4">
+                              <Button variant="ghost" size="sm" onClick={() => navigate(`/patient/report/${report.id}`)}>View</Button>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={5} className="py-8 text-center text-muted-foreground">
+                            No recent reports found.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </Card>
+
+              {/* Medical Insights */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card className="p-6">
+                  <h3 className="text-lg font-bold text-foreground mb-4">Health Activity</h3>
+                  <div className="h-64 w-full">
+                    {trendData.length > 0 ? (
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={trendData}>
+                          <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                          <XAxis dataKey="name" />
+                          <YAxis allowDecimals={false} />
+                          <Tooltip 
+                            contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }}
+                            itemStyle={{ color: 'hsl(var(--primary))' }}
+                          />
+                          <Bar dataKey="count" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    ) : (
+                      <div className="h-full flex items-center justify-center bg-muted/50 rounded-lg">
+                        <p className="text-muted-foreground">No activity data available yet</p>
+                      </div>
+                    )}
+                  </div>
+                </Card>
+                <Card className="p-6">
+                  <h3 className="text-lg font-bold text-foreground mb-4">Upcoming Appointments</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3 p-3 bg-accent rounded-lg">
+                      <Calendar className="h-5 w-5 text-primary" />
+                      <div>
+                        <p className="font-medium text-foreground">Follow-up Visit</p>
+                        <p className="text-sm text-muted-foreground">Jan 20, 2026 - 10:00 AM</p>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              </div>
             </>
           )}
-
-          {/* Quick Actions / Upload */}
-          {/* Moved to separate page */}
-
-          {/* Previous Quick Actions - Commented out or Removed for now as we focus on Upload */}
-          {/* <Card className="p-6"> ... </Card> */ }
-
-          {/* Recent Reports */}
-          <Card className="p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-foreground">Recent Reports</h2>
-              <Button variant="ghost" size="sm">View All</Button>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-border">
-                    <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">
-                      Report Name
-                    </th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">
-                      Date
-                    </th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">
-                      Status
-                    </th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">
-                      Doctor
-                    </th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">
-                      Action
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {recentReports.map((report) => (
-                    <tr key={report.id} className="border-b border-border hover:bg-muted/50">
-                      <td className="py-4 px-4">
-                        <div className="flex items-center gap-3">
-                          <div className="p-2 bg-primary/10 rounded-lg">
-                            <FileText className="h-4 w-4 text-primary" />
-                          </div>
-                          <span className="font-medium text-foreground">{report.name}</span>
-                        </div>
-                      </td>
-                      <td className="py-4 px-4 text-muted-foreground">{report.date}</td>
-                      <td className="py-4 px-4">
-                        <span
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            report.status === "Normal"
-                              ? "bg-success/10 text-success"
-                              : "bg-warning/10 text-warning"
-                          }`}
-                        >
-                          {report.status}
-                        </span>
-                      </td>
-                      <td className="py-4 px-4 text-muted-foreground">{report.doctor}</td>
-                      <td className="py-4 px-4">
-                        <Button variant="ghost" size="sm">View</Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </Card>
-
-          {/* Medical Insights */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="p-6">
-              <h3 className="text-lg font-bold text-foreground mb-4">Health Trends</h3>
-              <div className="h-48 flex items-center justify-center bg-muted/50 rounded-lg">
-                <p className="text-muted-foreground">Chart visualization placeholder</p>
-              </div>
-            </Card>
-            <Card className="p-6">
-              <h3 className="text-lg font-bold text-foreground mb-4">Upcoming Appointments</h3>
-              <div className="space-y-3">
-                <div className="flex items-center gap-3 p-3 bg-accent rounded-lg">
-                  <Calendar className="h-5 w-5 text-primary" />
-                  <div>
-                    <p className="font-medium text-foreground">Follow-up Visit</p>
-                    <p className="text-sm text-muted-foreground">Jan 20, 2024 - 10:00 AM</p>
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </div>
         </div>
       </main>
     </div>

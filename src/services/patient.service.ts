@@ -2,9 +2,17 @@ import api from '@/lib/api';
 
 export interface PatientDashboard {
   totalReports: number;
-  lastReportDate: string;
+  lastReportDate: string | null;
   riskAlerts: number;
   quickActions: string[];
+  recentReports: {
+    id: string;
+    name: string;
+    date: string;
+    status: string;
+    doctor: string;
+  }[];
+  healthTrends: any[];
 }
 
 export interface PatientDashboardResponse {
