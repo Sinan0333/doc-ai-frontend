@@ -40,3 +40,14 @@ export const useAddDoctor = () => {
     }
   });
 };
+
+export const useDoctorActivity = (doctorId: string, page = 1) => {
+  return useQuery({
+    queryKey: ["doctorActivity", doctorId, page],
+    queryFn: async () => {
+      const response = await api.get(`/admin/doctors/${doctorId}/activity?page=${page}`);
+      return response.data;
+    },
+    enabled: !!doctorId,
+  });
+};

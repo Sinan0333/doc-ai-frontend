@@ -22,6 +22,7 @@ import ReviewReport from "./pages/doctor/ReviewReport";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import DoctorList from "./pages/admin/DoctorList";
+import DoctorActivity from "./pages/admin/DoctorActivity";
 import { UnProtectedRoute } from "./components/UnProtectedRoute";
 
 const queryClient = new QueryClient({
@@ -151,6 +152,14 @@ const App = () => (
               element={
                 <ProtectedRoute requiredRole="admin">
                   <DoctorList />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/doctors/:doctorId/activity"
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <DoctorActivity />
                 </ProtectedRoute>
               }
             />

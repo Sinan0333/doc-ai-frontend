@@ -6,8 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Stethoscope, Mail, Phone, Calendar, ArrowLeft, ArrowRight, UserPlus } from "lucide-react";
 import { AddDoctorModal } from "@/components/admin/AddDoctorModal";
+import { useNavigate } from "react-router-dom";
 
 const DoctorList = () => {
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const { data, isLoading } = useDoctors(page, 10, search);
@@ -99,7 +101,13 @@ const DoctorList = () => {
                           </div>
                         </td>
                         <td className="py-4 px-6 text-right">
-                          <Button variant="outline" size="sm">View Activity</Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => navigate(`/admin/doctors/${doctor._id}/activity`)}
+                          >
+                            View Activity
+                          </Button>
                         </td>
                       </tr>
                     ))
