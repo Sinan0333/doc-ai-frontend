@@ -84,5 +84,16 @@ export const authService = {
     const response = await api.get<ApiResponse<User>>('/auth/me');
     return response.data.data || response.data as unknown as User;
   },
+
+  // Update profile
+  updateProfile: async (data: Partial<User>): Promise<User> => {
+    const response = await api.put<ApiResponse<User>>('/auth/profile', data);
+    return response.data.user || response.data as unknown as User;
+  },
+
+  // Change password
+  changePassword: async (data: any): Promise<void> => {
+    await api.put('/auth/change-password', data);
+  },
 };
 
