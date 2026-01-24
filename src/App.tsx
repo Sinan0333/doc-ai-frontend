@@ -22,6 +22,7 @@ import ReviewReport from "./pages/doctor/ReviewReport";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import DoctorList from "./pages/admin/DoctorList";
+import AdminPatientList from "./pages/admin/PatientList";
 import DoctorActivity from "./pages/admin/DoctorActivity";
 import { UnProtectedRoute } from "./components/UnProtectedRoute";
 
@@ -160,6 +161,14 @@ const App = () => (
               element={
                 <ProtectedRoute requiredRole="admin">
                   <DoctorActivity />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/patients"
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <AdminPatientList />
                 </ProtectedRoute>
               }
             />

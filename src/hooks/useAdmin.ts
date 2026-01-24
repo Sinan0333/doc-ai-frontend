@@ -51,3 +51,13 @@ export const useDoctorActivity = (doctorId: string, page = 1) => {
     enabled: !!doctorId,
   });
 };
+
+export const useAdminPatients = (page = 1, limit = 10, search = "") => {
+  return useQuery({
+    queryKey: ["adminPatients", page, limit, search],
+    queryFn: async () => {
+      const response = await api.get(`/admin/patients?page=${page}&limit=${limit}&search=${search}`);
+      return response.data;
+    },
+  });
+};

@@ -49,6 +49,7 @@ const Sidebar = ({ role }: SidebarProps) => {
   const adminLinks = [
     { to: "/admin/dashboard", icon: LayoutDashboard, label: "Dashboard" },
     { to: "/admin/doctors", icon: Users, label: "Doctor List" },
+    { to: "/admin/patients", icon: Users, label: "Patient List" },
     { to: "/admin/settings", icon: Settings, label: "Settings" },
   ];
 
