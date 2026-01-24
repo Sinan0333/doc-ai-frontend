@@ -4,7 +4,8 @@ import Sidebar from "@/components/Sidebar";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Stethoscope, Mail, Phone, Calendar, ArrowLeft, ArrowRight } from "lucide-react";
+import { Search, Stethoscope, Mail, Phone, Calendar, ArrowLeft, ArrowRight, UserPlus } from "lucide-react";
+import { AddDoctorModal } from "@/components/admin/AddDoctorModal";
 
 const DoctorList = () => {
   const [page, setPage] = useState(1);
@@ -39,6 +40,7 @@ const DoctorList = () => {
                 className="pl-10"
               />
             </div>
+            <AddDoctorModal />
           </div>
 
           <Card className="overflow-hidden border-border bg-card/50">
