@@ -61,3 +61,14 @@ export const useAdminPatients = (page = 1, limit = 10, search = "") => {
     },
   });
 };
+
+export const useAdminPatientHistory = (patientId: string, page = 1) => {
+  return useQuery({
+    queryKey: ["adminPatientHistory", patientId, page],
+    queryFn: async () => {
+      const response = await api.get(`/admin/patients/${patientId}/history?page=${page}`);
+      return response.data;
+    },
+    enabled: !!patientId,
+  });
+};

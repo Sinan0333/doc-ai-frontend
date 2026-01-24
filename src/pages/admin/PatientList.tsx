@@ -5,8 +5,10 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, User, Mail, Phone, Calendar, ArrowLeft, ArrowRight, MapPin } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const PatientList = () => {
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const { data, isLoading } = useAdminPatients(page, 10, search);
@@ -105,7 +107,13 @@ const PatientList = () => {
                           </div>
                         </td>
                         <td className="py-4 px-6 text-right">
-                          <Button variant="outline" size="sm">View History</Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => navigate(`/admin/patients/${patient._id}/history`)}
+                          >
+                            View History
+                          </Button>
                         </td>
                       </tr>
                     ))
