@@ -17,7 +17,7 @@ import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
 
 interface SidebarProps {
-  role: "patient" | "doctor";
+  role: "patient" | "doctor" | "admin";
 }
 
 const Sidebar = ({ role }: SidebarProps) => {
@@ -26,7 +26,9 @@ const Sidebar = ({ role }: SidebarProps) => {
 
   const handleLogout = () => {
     logout();
-    navigate(role === "patient" ? "/patient/login" : "/doctor/login");
+    if (role === "patient") navigate("/patient/login");
+    else if (role === "doctor") navigate("/doctor/login");
+    else navigate("/admin/login");
   };
 
   const patientLinks = [
@@ -44,7 +46,13 @@ const Sidebar = ({ role }: SidebarProps) => {
     { to: "/doctor/alerts", icon: AlertCircle, label: "Alerts" },
   ];
 
-  const links = role === "patient" ? patientLinks : doctorLinks;
+  const adminLinks = [
+    { to: "/admin/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+    { to: "/admin/doctors", icon: Users, label: "Doctor List" },
+    { to: "/admin/settings", icon: Settings, label: "Settings" },
+  ];
+
+  const links = role === "patient" ? patientLinks : role === "doctor" ? doctorLinks : adminLinks;
 
   return (
     <aside className="w-64 bg-card border-r border-border h-screen sticky top-0 flex flex-col">

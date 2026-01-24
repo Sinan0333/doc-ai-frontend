@@ -19,6 +19,9 @@ import PatientList from "./pages/doctor/PatientList";
 import PatientHistory from "./pages/doctor/PatientHistory";
 import ReviewRequests from "./pages/doctor/ReviewRequests";
 import ReviewReport from "./pages/doctor/ReviewReport";
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import DoctorList from "./pages/admin/DoctorList";
 import { UnProtectedRoute } from "./components/UnProtectedRoute";
 
 const queryClient = new QueryClient({
@@ -133,6 +136,25 @@ const App = () => (
               }
             />
 
+            {/* Admin Routes */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route
+              path="/admin/dashboard"
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/doctors"
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <DoctorList />
+                </ProtectedRoute>
+              }
+            />
+
             {/* Redirect /patient and /doctor to their login pages */}
             <Route
               path="/patient"
@@ -141,6 +163,10 @@ const App = () => (
             <Route
               path="/doctor"
               element={<Navigate to="/doctor/login" replace />}
+            />
+            <Route
+              path="/admin"
+              element={<Navigate to="/admin/login" replace />}
             />
 
             {/* Catch-all route */}

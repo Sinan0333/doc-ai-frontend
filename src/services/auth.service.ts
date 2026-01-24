@@ -70,6 +70,15 @@ export const authService = {
     return response.data as AuthResponse;
   },
 
+  // Admin login
+  loginAdmin: async (data: LoginData): Promise<AuthResponse> => {
+    const response = await api.post<ApiResponse<AuthResponse>>('/auth/admin-login', data);
+    if (response.data.user && response.data.token) {
+      return { user: response.data.user, token: response.data.token };
+    }
+    return response.data as AuthResponse;
+  },
+
   // Get current user (for session restore)
   getCurrentUser: async (): Promise<User> => {
     const response = await api.get<ApiResponse<User>>('/auth/me');

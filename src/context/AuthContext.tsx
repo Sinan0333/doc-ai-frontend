@@ -4,7 +4,7 @@ import { toast } from "sonner";
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string, role: "patient" | "doctor") => Promise<void>;
+  login: (email: string, password: string, role: "patient" | "doctor" | "admin") => Promise<void>;
   register: (userData: any) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
@@ -40,12 +40,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     loadUser();
   }, []);
 
-  const login = async (email: string, password: string, role: "patient" | "doctor") => {
+  const login = async (email: string, password: string, role: "patient" | "doctor" | "admin") => {
     try {
       const loginData: LoginData = { email, password };
-      const response = role === "patient" 
-        ? await authService.loginPatient(loginData)
-        : await authService.loginDoctor(loginData);
+      let response;
+      if (role === "patient") {
+        response = await authService.loginPatient(loginData);
+      } else if (role === "doctor") {
+        response = await authService.loginDoctor(loginData);
+      } else {
+        response = await authService.loginAdmin(loginData);
+      }
       
       setUser(response.user);
       localStorage.setItem("user", JSON.stringify(response.user));
