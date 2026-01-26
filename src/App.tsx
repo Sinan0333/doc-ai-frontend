@@ -11,6 +11,7 @@ import PatientRegister from "./pages/patient/PatientRegister";
 import PatientLogin from "./pages/patient/PatientLogin";
 import PatientDashboard from "./pages/patient/PatientDashboard";
 import UploadReport from "./pages/patient/UploadReport";
+import ReportComparison from "./pages/patient/ReportComparison";
 import History from "./pages/patient/History";
 import Profile from "./pages/patient/Profile";
 import DoctorLogin from "./pages/doctor/DoctorLogin";
@@ -77,6 +78,14 @@ const App = () => (
               element={
                 <ProtectedRoute requiredRole="patient">
                   <UploadReport />
+                </ProtectedRoute>
+              }
+            />
+            <Route 
+              path="/patient/comparison" 
+              element={
+                <ProtectedRoute requiredRole="patient">
+                  <ReportComparison />
                 </ProtectedRoute>
               }
             />

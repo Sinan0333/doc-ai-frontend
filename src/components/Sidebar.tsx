@@ -2,6 +2,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import {
   Activity,
   AlertCircle,
+  ArrowLeftRight,
   BarChart3,
   ClipboardList,
   FileText,
@@ -35,6 +36,7 @@ const Sidebar = ({ role }: SidebarProps) => {
     { to: "/patient/dashboard", icon: LayoutDashboard, label: "Dashboard" },
     { to: "/patient/upload", icon: Upload, label: "Upload Report" },
     { to: "/patient/history", icon: History, label: "History" },
+    { to: "/patient/comparison", icon: ArrowLeftRight, label: "Report Comparison" },
     { to: "/patient/profile", icon: User, label: "Profile" },
   ];
 
