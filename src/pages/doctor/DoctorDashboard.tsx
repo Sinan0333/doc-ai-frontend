@@ -65,7 +65,7 @@ const DoctorDashboard = () => {
           ) : (
             <>
               {/* Stats Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <StatCard
                   title="Total Patients"
                   value={dashboardData?.dashboard.totalPatients?.toString() || "0"}
@@ -87,13 +87,13 @@ const DoctorDashboard = () => {
                   trend="Needs attention"
                   trendUp={false}
                 />
-                <StatCard
+                {/* <StatCard
                   title="Recovery Rate"
                   value="94%"
                   icon={TrendingUp}
                   trend="+3% vs last month"
                   trendUp={true}
-                />
+                /> */}
               </div>
 
               {/* Analytics Section */}
@@ -162,7 +162,7 @@ const DoctorDashboard = () => {
                 <Card className="p-6">
                   <div className="flex items-center justify-between mb-6">
                     <h2 className="text-xl font-bold text-foreground">Priority Alerts</h2>
-                    <Button variant="ghost" size="sm">View All</Button>
+                    {/* <Button variant="ghost" size="sm">View All</Button> */}
                   </div>
                   <div className="space-y-3">
                     {dashboardData.dashboard.priorityAlerts.map((alert: any) => (
@@ -179,7 +179,7 @@ const DoctorDashboard = () => {
                             <p className="font-semibold text-foreground">{alert.patient}</p>
                             <p className="text-sm text-muted-foreground mt-1">{alert.message}</p>
                           </div>
-                          <Button size="sm" variant="outline">Review</Button>
+                          {/* <Button size="sm" variant="outline">Review</Button> */}
                         </div>
                       </div>
                     ))}
@@ -217,7 +217,7 @@ const DoctorDashboard = () => {
                             </td>
                             <td className="py-4 px-4 text-muted-foreground">{patient.lastReport}</td>
                             <td className="py-4 px-4">
-                              <Button variant="ghost" size="sm">View Records</Button>
+                              <Button variant="ghost" size="sm" onClick={() => navigate(`/doctor/patients/${patient.id}/history`)}>View Records</Button>
                             </td>
                           </tr>
                         ))

@@ -50,7 +50,7 @@ const AdminDashboard = () => {
           ) : (
             <>
               {/* Stats Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <StatCard
                   title="Total Doctors"
                   value={stats.totalDoctors.toString()}
@@ -72,13 +72,13 @@ const AdminDashboard = () => {
                   trend="Processed by AI"
                   trendUp={true}
                 />
-                <StatCard
+                {/* <StatCard
                   title="System Growth"
                   value="12%"
                   icon={TrendingUp}
                   trend="+2% this month"
                   trendUp={true}
-                />
+                /> */}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

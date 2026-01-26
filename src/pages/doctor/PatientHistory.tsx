@@ -38,6 +38,7 @@ import {
   Filter,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import ReportAnalysisResult from "@/components/ReportAnalysisResult";
 
 interface Patient {
   _id: string;
@@ -366,12 +367,11 @@ const PatientHistory = () => {
               </div>
 
               <div className="border-t pt-4">
-                <h4 className="font-semibold mb-2">AI Analysis Results</h4>
-                <div className="bg-muted/50 p-4 rounded-lg">
-                  <pre className="text-xs whitespace-pre-wrap font-mono">
-                    {JSON.stringify(selectedReport.analyzedData, null, 2)}
-                  </pre>
-                </div>
+                <ReportAnalysisResult 
+                  data={selectedReport.analyzedData} 
+                  reportName={selectedReport.reportName}
+                  reportType={selectedReport.reportType}
+                />
               </div>
 
               {selectedReport.doctorReview.notes && (

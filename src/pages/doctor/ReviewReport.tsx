@@ -19,6 +19,7 @@ import {
   Send,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import ReportAnalysisResult from "@/components/ReportAnalysisResult";
 
 interface Patient {
   _id: string;
@@ -281,11 +282,11 @@ const ReviewReport = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="bg-muted/50 p-4 rounded-lg">
-                <pre className="text-sm whitespace-pre-wrap font-mono">
-                  {JSON.stringify(report.analyzedData, null, 2)}
-                </pre>
-              </div>
+              <ReportAnalysisResult 
+                data={report.analyzedData} 
+                reportName={report.reportName}
+                reportType={report.reportType}
+              />
             </CardContent>
           </Card>
 
