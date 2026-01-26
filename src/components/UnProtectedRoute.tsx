@@ -3,7 +3,7 @@ import { useAuth } from '@/context/AuthContext';
 
 interface UnProtectedRouteProps {
   children: React.ReactNode;
-  requiredRole?: 'patient' | 'doctor';
+  requiredRole?: 'patient' | 'doctor' | 'admin';
 }
 
 export const UnProtectedRoute = ({ children, requiredRole }: UnProtectedRouteProps) => {
@@ -21,12 +21,18 @@ export const UnProtectedRoute = ({ children, requiredRole }: UnProtectedRoutePro
   }
 
   if (user) {
+    if (user.role === 'doctor') {
+      return <Navigate to="/doctor/dashboard" replace />;
+    }
+    if (user.role === 'admin') {
+      return <Navigate to="/admin/dashboard" replace />;
+    }
     return <Navigate to="/patient/dashboard" replace />;
   }
 
-  if (requiredRole && user.role !== requiredRole && user.role !== 'admin') {
-    return <Navigate to="/" replace />;
-  }
+  // if (requiredRole && user?.role !== requiredRole && user?.role !== 'admin') {
+  //   return <Navigate to="/" replace />;
+  // }
 
   return <>{children}</>;
 };

@@ -107,7 +107,14 @@ const App = () => (
             />
             
             {/* Doctor Routes */}
-            <Route path="/doctor/login" element={<DoctorLogin />} />
+            <Route 
+              path="/doctor/login" 
+              element={
+                <UnProtectedRoute requiredRole="doctor">
+                  <DoctorLogin />
+                </UnProtectedRoute>
+              } 
+            />
             <Route
               path="/doctor/dashboard"
               element={
@@ -150,7 +157,14 @@ const App = () => (
             />
 
             {/* Admin Routes */}
-            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route 
+              path="/admin/login" 
+              element={
+                <UnProtectedRoute requiredRole="admin">
+                  <AdminLogin />
+                </UnProtectedRoute>
+              } 
+            />
             <Route
               path="/admin/dashboard"
               element={
