@@ -8,7 +8,15 @@ import { Label } from "@/components/ui/label";
 import { format } from "date-fns";
 import api from "@/lib/api";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Download, FileText, User, Calendar, AlertTriangle } from "lucide-react";
+import { Download, FileText, User, Calendar, AlertTriangle, Activity } from "lucide-react";
+import { 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableHead, 
+  TableHeader, 
+  TableRow 
+} from "@/components/ui/table";
 import { toast } from "sonner";
 
 interface ReportDetailModalProps {
@@ -104,7 +112,7 @@ export default function ReportDetailModal({ reportId, isOpen, onClose }: ReportD
         ) : error ? (
             <div className="p-8 text-center text-red-500">Failed to load report.</div>
         ) : report ? (
-          <ScrollArea className="flex-1 pr-4">
+          <ScrollArea className="flex-1 pr-4 overflow-y-auto">
             <div className="space-y-6 p-1">
               {/* Metadata */}
               <div className="grid grid-cols-2 gap-4 text-sm">
@@ -148,6 +156,52 @@ export default function ReportDetailModal({ reportId, isOpen, onClose }: ReportD
                      </div>
                 )}
               </div>
+
+              {/* Detailed Parameters */}
+              <div className="space-y-3">
+                <h3 className="font-semibold flex items-center gap-2">
+                    <Activity className="h-4 w-4 text-primary" /> Detailed Parameters
+                </h3>
+                <div className="rounded-md border overflow-hidden">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="bg-muted/50">
+                        <TableHead className="py-2 h-auto text-xs">Parameter</TableHead>
+                        <TableHead className="py-2 h-auto text-xs">Value</TableHead>
+                        <TableHead className="py-2 h-auto text-xs">Unit</TableHead>
+                        <TableHead className="py-2 h-auto text-xs">Category</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {report.analyzedData?.parameters && report.analyzedData.parameters.length > 0 ? (
+                            report.analyzedData.parameters.map((param: any, index: number) => (
+                                <TableRow key={index} className="hover:bg-accent/50 transition-colors">
+                                    <TableCell className="py-2 font-medium text-xs">{param.name}</TableCell>
+                                    <TableCell className="py-2 text-xs">
+                                        <span className={report.analyzedData.redFlags?.some((flag: string) => flag.toLowerCase().includes(param.name.toLowerCase())) ? "text-red-600 font-bold" : ""}>
+                                            {param.value}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell className="py-2 text-xs text-muted-foreground">{param.unit}</TableCell>
+                                    <TableCell className="py-2 text-xs">
+                                        <Badge variant="secondary" className="font-normal text-[10px] px-1 py-0 h-4">
+                                            {param.category}
+                                        </Badge>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={4} className="text-center h-16 text-xs text-muted-foreground">
+                                    No detailed parameters extracted.
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+
 
               {/* Doctor Review Section */}
               <div className="border rounded-lg p-4">

@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import api from '@/lib/api';
+import ReportAnalysisResult from './ReportAnalysisResult';
 
 export default function ReportUpload() {
     const [file, setFile] = useState<File | null>(null);
@@ -61,68 +62,71 @@ export default function ReportUpload() {
     };
 
     return (
-        <Card className="w-full max-w-2xl mx-auto mt-10">
-            <CardHeader>
-                <CardTitle>Upload Medical Report</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-                <div className="space-y-2">
-                    <Label htmlFor="reportName">Report Name</Label>
-                    <Input 
-                        id="reportName" 
-                        placeholder="e.g. Annual Checkup 2024" 
-                        value={reportName}
-                        onChange={(e) => setReportName(e.target.value)}
-                    />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
+        <div >
+            <Card className="w-full">
+                <CardHeader>
+                    <CardTitle>Upload Medical Report</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
                     <div className="space-y-2">
-                        <Label htmlFor="reportType">Report Type</Label>
-                        <Select onValueChange={setReportType} value={reportType}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select type" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="Blood Test">Blood Test</SelectItem>
-                                <SelectItem value="X-Ray">X-Ray</SelectItem>
-                                <SelectItem value="MRI">MRI</SelectItem>
-                                <SelectItem value="CT Scan">CT Scan</SelectItem>
-                                <SelectItem value="Prescription">Prescription</SelectItem>
-                                <SelectItem value="Other">Other</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label htmlFor="reportDate">Report Date</Label>
+                        <Label htmlFor="reportName">Report Name</Label>
                         <Input 
-                            id="reportDate" 
-                            type="date" 
-                            value={reportDate}
-                            onChange={(e) => setReportDate(e.target.value)}
+                            id="reportName" 
+                            placeholder="e.g. Annual Checkup 2024" 
+                            value={reportName}
+                            onChange={(e) => setReportName(e.target.value)}
                         />
                     </div>
-                </div>
 
-                <div className="space-y-2">
-                    <Label htmlFor="picture">Report PDF</Label>
-                    <Input id="picture" type="file" accept="application/pdf" onChange={handleFileChange} />
-                </div>
-                
-                <Button onClick={handleUpload} disabled={isLoading} className="w-full">
-                    {isLoading ? "Analyzing..." : "Upload & Analyze"}
-                </Button>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="reportType">Report Type</Label>
+                            <Select onValueChange={setReportType} value={reportType}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="Blood Test">Blood Test</SelectItem>
+                                    <SelectItem value="X-Ray">X-Ray</SelectItem>
+                                    <SelectItem value="MRI">MRI</SelectItem>
+                                    <SelectItem value="CT Scan">CT Scan</SelectItem>
+                                    <SelectItem value="Prescription">Prescription</SelectItem>
+                                    <SelectItem value="Other">Other</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
 
-                {result && (
-                    <div className="mt-6 p-4 bg-slate-50 rounded-lg border">
-                        <h3 className="font-bold mb-2">Analysis Result:</h3>
-                        <pre className="text-xs overflow-auto max-h-96">
-                            {JSON.stringify(result.data, null, 2)}
-                        </pre>
+                        <div className="space-y-2">
+                            <Label htmlFor="reportDate">Report Date</Label>
+                            <Input 
+                                id="reportDate" 
+                                type="date" 
+                                value={reportDate}
+                                onChange={(e) => setReportDate(e.target.value)}
+                            />
+                        </div>
                     </div>
-                )}
-            </CardContent>
-        </Card>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="picture">Report PDF</Label>
+                        <Input id="picture" type="file" accept="application/pdf" onChange={handleFileChange} />
+                    </div>
+                    
+                    <Button onClick={handleUpload} disabled={isLoading} className="w-full">
+                        {isLoading ? "Analyzing..." : "Upload & Analyze"}
+                    </Button>
+                </CardContent>
+            </Card>
+
+            {result && (
+                <div className="lg:mt-0">
+                    <ReportAnalysisResult 
+                        data={result.data} 
+                        reportName={reportName}
+                        reportType={reportType}
+                    />
+                </div>
+            )}
+        </div>
     );
 }

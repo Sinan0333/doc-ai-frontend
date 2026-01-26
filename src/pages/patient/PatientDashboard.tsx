@@ -94,9 +94,9 @@ const PatientDashboard = () => {
                         <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">
                           Doctor
                         </th>
-                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">
+                        {/* <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">
                           Action
-                        </th>
+                        </th> */}
                       </tr>
                     </thead>
                     <tbody>
@@ -124,9 +124,9 @@ const PatientDashboard = () => {
                               </span>
                             </td>
                             <td className="py-4 px-4 text-muted-foreground">{report.doctor}</td>
-                            <td className="py-4 px-4">
+                            {/* <td className="py-4 px-4">
                               <Button variant="ghost" size="sm" onClick={() => navigate(`/patient/report/${report.id}`)}>View</Button>
-                            </td>
+                            </td> */}
                           </tr>
                         ))
                       ) : (
@@ -142,7 +142,7 @@ const PatientDashboard = () => {
               </Card>
 
               {/* Medical Insights */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1  gap-6">
                 <Card className="p-6">
                   <h3 className="text-lg font-bold text-foreground mb-4">Health Activity</h3>
                   <div className="h-64 w-full">
@@ -166,7 +166,7 @@ const PatientDashboard = () => {
                     )}
                   </div>
                 </Card>
-                <Card className="p-6">
+                {/* <Card className="p-6">
                   <h3 className="text-lg font-bold text-foreground mb-4">Upcoming Appointments</h3>
                   <div className="space-y-3">
                     <div className="flex items-center gap-3 p-3 bg-accent rounded-lg">
@@ -177,7 +177,7 @@ const PatientDashboard = () => {
                       </div>
                     </div>
                   </div>
-                </Card>
+                </Card> */}
               </div>
             </>
           )}

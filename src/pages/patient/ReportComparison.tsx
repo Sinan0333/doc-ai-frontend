@@ -22,6 +22,8 @@ import { AlertCircle, ArrowLeftRight, FileText, Loader2, Sparkles } from "lucide
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 
+import ReportComparisonResult from "@/components/ReportComparisonResult";
+
 interface Report {
   _id: string;
   reportName: string;
@@ -37,7 +39,8 @@ const ReportComparison = () => {
   
   const [reportId1, setReportId1] = useState<string>("");
   const [reportId2, setReportId2] = useState<string>("");
-  const [comparisonResult, setComparisonResult] = useState<string | null>(null);
+  const [reportNames, setReportNames] = useState<{name1: string, name2: string}>({name1: "", name2: ""});
+  const [comparisonResult, setComparisonResult] = useState<any | null>(null);
 
   const fetchReports = async () => {
     setLoadingReports(true);
@@ -75,6 +78,12 @@ const ReportComparison = () => {
         reportId2,
       });
       if (response.data.success) {
+        const r1 = reports.find(r => r._id === reportId1);
+        const r2 = reports.find(r => r._id === reportId2);
+        setReportNames({
+            name1: `${r1?.reportName} (${format(new Date(r1?.reportDate || ""), "MMM dd")})`,
+            name2: `${r2?.reportName} (${format(new Date(r2?.reportDate || ""), "MMM dd")})`
+        });
         setComparisonResult(response.data.data.comparison);
         toast.success("Comparison generated successfully");
       }
@@ -172,17 +181,11 @@ const ReportComparison = () => {
           {/* Result Section */}
           <div className="pt-4">
             {comparisonResult ? (
-              <Card className="border-primary/30 shadow-lg shadow-primary/5 overflow-hidden">
-                <CardHeader className="bg-primary/10 border-b border-primary/20">
-                  <CardTitle className="flex items-center gap-2 text-primary">
-                    <Sparkles className="h-6 w-6" />
-                    Comparative AI Analysis
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-8 prose prose-slate max-w-none dark:prose-invert">
-                  <ReactMarkdown>{comparisonResult}</ReactMarkdown>
-                </CardContent>
-              </Card>
+              <ReportComparisonResult 
+                data={comparisonResult} 
+                report1Name={reportNames.name1} 
+                report2Name={reportNames.name2} 
+              />
             ) : comparing ? (
               <div className="flex flex-col items-center justify-center py-20 gap-4">
                 <div className="h-16 w-16 relative">

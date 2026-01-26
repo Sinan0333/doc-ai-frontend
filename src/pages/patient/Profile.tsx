@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 const Profile = () => {
   const { user, login } = useAuth(); // Re-fetch user on update if possible, or manually update context
   const [loading, setLoading] = useState(false);
+  console.log(user);
 
   // Profile Form State
   const [formData, setFormData] = useState({
@@ -51,6 +52,7 @@ const Profile = () => {
     try {
       const res = await api.put("/auth/profile", formData);
       toast.success(res.data.message);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
       // Ideally update auth context here, for now we assume reload or next fetch will get it
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Failed to update profile");
@@ -160,9 +162,9 @@ const Profile = () => {
                             <SelectValue placeholder="Select gender" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="Male">Male</SelectItem>
-                            <SelectItem value="Female">Female</SelectItem>
-                            <SelectItem value="Other">Other</SelectItem>
+                            <SelectItem value="male">Male</SelectItem>
+                            <SelectItem value="female">Female</SelectItem>
+                            <SelectItem value="other">Other</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
