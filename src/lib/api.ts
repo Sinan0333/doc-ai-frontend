@@ -44,9 +44,12 @@ api.interceptors.response.use(
     if (status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      toast.error('Session expired. Please login again.');
+      // toast.error('Session expired. Please login again.');
       // Redirect to login will be handled by protected routes
-      window.location.href = '/';
+      const currentPath = window.location.pathname
+      if(currentPath !== '/doctor/login' && currentPath !== '/doctor/login' && currentPath !== '/admin/login' && currentPath !== '/doctor/register'){
+        window.location.href = '/';
+      }
       return Promise.reject(error);
     }
 

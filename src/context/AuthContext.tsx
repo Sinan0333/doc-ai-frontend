@@ -57,6 +57,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       localStorage.setItem("user", JSON.stringify(response.user));
       localStorage.setItem("token", response.token);
     } catch (error: any) {
+      console.log(error);
+      toast.error(error.response?.data?.message);
       // Error is handled by axios interceptor
       throw error;
     }
