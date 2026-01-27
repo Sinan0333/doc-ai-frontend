@@ -29,6 +29,7 @@ const AdminLogin = () => {
     setLoading(true);
     try {
       await login(formData.email, formData.password, "admin");
+      toast.success("Login successful! Welcome to the Admin Panel.");
       navigate("/admin/dashboard");
     } catch (error) {
       // Error is already handled by axios interceptor

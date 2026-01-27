@@ -29,6 +29,7 @@ const DoctorLogin = () => {
     setLoading(true);
     try {
       await login(formData.email, formData.password, "doctor");
+      toast.success("Login successful! Welcome to the Doctor Portal.");
       navigate("/doctor/dashboard");
     } catch (error) {
       // Error is already handled by axios interceptor

@@ -29,6 +29,7 @@ const PatientLogin = () => {
     setLoading(true);
     try {
       await login(formData.email, formData.password, "patient");
+      toast.success("Login successful! Welcome back.");
       navigate("/patient/dashboard");
     } catch (error) {
       // Error is already handled by axios interceptor

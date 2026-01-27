@@ -68,6 +68,7 @@ const PatientRegister = () => {
     setLoading(true);
     try {
       await register(formData);
+      toast.success("Account created successfully! Welcome to DocAI.");
       navigate("/patient/dashboard");
     } catch (error) {
       // Error is already handled by axios interceptor
