@@ -47,7 +47,7 @@ api.interceptors.response.use(
       // toast.error('Session expired. Please login again.');
       // Redirect to login will be handled by protected routes
       const currentPath = window.location.pathname
-      if(currentPath !== '/doctor/login' && currentPath !== '/doctor/login' && currentPath !== '/admin/login' && currentPath !== '/doctor/register'){
+      if(currentPath !== '/doctor/login' && currentPath !== '/patient/login' && currentPath !== '/admin/login' && currentPath !== '/patient/register'){
         window.location.href = '/';
       }
       return Promise.reject(error);
