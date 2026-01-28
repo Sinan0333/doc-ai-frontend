@@ -4,7 +4,7 @@ import Sidebar from "@/components/Sidebar";
 import StatCard from "@/components/StatCard";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Users, FileText, Stethoscope, TrendingUp } from "lucide-react";
+import { Users, FileText, Stethoscope, TrendingUp, Info } from "lucide-react";
 import { 
   BarChart, 
   Bar, 
@@ -14,6 +14,12 @@ import {
   Tooltip, 
   ResponsiveContainer 
 } from 'recharts';
+import {
+  Tooltip as UiTooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useNavigate } from "react-router-dom";
 
 const AdminDashboard = () => {
@@ -57,6 +63,7 @@ const AdminDashboard = () => {
                   icon={Stethoscope}
                   trend="Medical staff"
                   trendUp={true}
+                  infoText="Total number of active doctors currently registered in the system."
                 />
                 <StatCard
                   title="Total Patients"
@@ -64,6 +71,7 @@ const AdminDashboard = () => {
                   icon={Users}
                   trend="Registered users"
                   trendUp={true}
+                  infoText="Total number of patients registered in the system."
                 />
                 <StatCard
                   title="Total Reports"
@@ -71,22 +79,28 @@ const AdminDashboard = () => {
                   icon={FileText}
                   trend="Processed by AI"
                   trendUp={true}
+                  infoText="Cumulative number of medical reports uploaded and processed."
                 />
-                {/* <StatCard
-                  title="System Growth"
-                  value="12%"
-                  icon={TrendingUp}
-                  trend="+2% this month"
-                  trendUp={true}
-                /> */}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Analytics Section */}
                 <Card className="p-6">
-                  <h3 className="text-lg font-bold text-foreground mb-4">
-                    Report Generation Trend
-                  </h3>
+                  <div className="flex items-center gap-2 mb-4">
+                     <h3 className="text-lg font-bold text-foreground">
+                      Report Generation Trend
+                    </h3>
+                    <TooltipProvider>
+                      <UiTooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="h-4 w-4 text-muted-foreground/50 cursor-pointer hover:text-primary transition-colors" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p className="max-w-[200px] text-xs">Monthly breakdown of uploaded reports over the last 6 months.</p>
+                        </TooltipContent>
+                      </UiTooltip>
+                    </TooltipProvider>
+                  </div>
                   <div className="h-64 w-full">
                     {trendData.length > 0 ? (
                       <ResponsiveContainer width="100%" height="100%">
@@ -112,7 +126,19 @@ const AdminDashboard = () => {
                 {/* Recent Doctors List */}
                 <Card className="p-6">
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-bold text-foreground">Recent Doctors Joined</h2>
+                     <div className="flex items-center gap-2">
+                        <h2 className="text-xl font-bold text-foreground">Recent Doctors Joined</h2>
+                        <TooltipProvider>
+                          <UiTooltip>
+                            <TooltipTrigger asChild>
+                              <Info className="h-4 w-4 text-muted-foreground/50 cursor-pointer hover:text-primary transition-colors" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="max-w-[200px] text-xs">List of the last 5 doctors who have registered on the platform.</p>
+                            </TooltipContent>
+                          </UiTooltip>
+                        </TooltipProvider>
+                     </div>
                     <Button onClick={() => navigate('/admin/doctors')} variant="ghost" size="sm">View All</Button>
                   </div>
                   <div className="space-y-4">

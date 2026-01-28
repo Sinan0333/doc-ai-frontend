@@ -4,7 +4,7 @@ import Sidebar from "@/components/Sidebar";
 import StatCard from "@/components/StatCard";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Users, FileText, AlertTriangle, TrendingUp } from "lucide-react";
+import { Users, FileText, AlertTriangle, TrendingUp, Info } from "lucide-react";
 import { 
   LineChart, 
   Line, 
@@ -19,6 +19,12 @@ import {
   BarChart,
   Bar
 } from 'recharts';
+import {
+  Tooltip as UiTooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useNavigate } from "react-router-dom";
 
 const DoctorDashboard = () => {
@@ -72,6 +78,7 @@ const DoctorDashboard = () => {
                   icon={Users}
                   trend="Total in system"
                   trendUp={true}
+                  infoText="Patients who have had at least one report reviewed by you."
                 />
                 <StatCard
                   title="Reports Awaiting"
@@ -79,6 +86,7 @@ const DoctorDashboard = () => {
                   icon={FileText}
                   trend="Allocated to you"
                   trendUp={false}
+                  infoText="Medical reports currently assigned to you that require review."
                 />
                 <StatCard
                   title="Abnormal Cases"
@@ -86,6 +94,7 @@ const DoctorDashboard = () => {
                   icon={AlertTriangle}
                   trend="Needs attention"
                   trendUp={false}
+                  infoText="Reports flagged by AI as having abnormal findings."
                 />
                 {/* <StatCard
                   title="Recovery Rate"
@@ -99,9 +108,21 @@ const DoctorDashboard = () => {
               {/* Analytics Section */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card className="p-6">
-                  <h3 className="text-lg font-bold text-foreground mb-4">
-                    Patient Visits Trend
-                  </h3>
+                  <div className="flex items-center gap-2 mb-4">
+                    <h3 className="text-lg font-bold text-foreground">
+                      Patient Visits Trend
+                    </h3>
+                    <TooltipProvider>
+                      <UiTooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="h-4 w-4 text-muted-foreground/50 cursor-pointer hover:text-primary transition-colors" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p className="max-w-[200px] text-xs">Number of patients visited or reports processed per month.</p>
+                        </TooltipContent>
+                      </UiTooltip>
+                    </TooltipProvider>
+                  </div>
                   <div className="h-64 w-full">
                     {trendData.length > 0 ? (
                       <ResponsiveContainer width="100%" height="100%">
@@ -124,9 +145,21 @@ const DoctorDashboard = () => {
                   </div>
                 </Card>
                 <Card className="p-6">
-                  <h3 className="text-lg font-bold text-foreground mb-4">
-                    Diagnostic Distribution
-                  </h3>
+                   <div className="flex items-center gap-2 mb-4">
+                    <h3 className="text-lg font-bold text-foreground">
+                      Diagnostic Distribution
+                    </h3>
+                    <TooltipProvider>
+                      <UiTooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="h-4 w-4 text-muted-foreground/50 cursor-pointer hover:text-primary transition-colors" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p className="max-w-[200px] text-xs">Breakdown of report categories (e.g., Blood Test, X-Ray) for your patients.</p>
+                        </TooltipContent>
+                      </UiTooltip>
+                    </TooltipProvider>
+                  </div>
                   <div className="h-64 w-full">
                     {diagnosticData.length > 0 ? (
                       <ResponsiveContainer width="100%" height="100%">
@@ -141,7 +174,7 @@ const DoctorDashboard = () => {
                             fill="#8884d8"
                             dataKey="value"
                           >
-                            {diagnosticData.map((entry, index) => (
+                            {diagnosticData.map((entry: any, index: any) => (
                               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                             ))}
                           </Pie>

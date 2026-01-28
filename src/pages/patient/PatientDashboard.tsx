@@ -4,7 +4,7 @@ import Sidebar from "@/components/Sidebar";
 import StatCard from "@/components/StatCard";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { FileText, AlertTriangle, Calendar, Upload, History, BarChart3 } from "lucide-react";
+import { FileText, AlertTriangle, Calendar, Upload, History, BarChart3, Info } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { 
   BarChart, 
@@ -15,6 +15,12 @@ import {
   Tooltip, 
   ResponsiveContainer 
 } from 'recharts';
+import {
+  Tooltip as UiTooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const PatientDashboard = () => {
   const { user } = useAuth();
@@ -57,6 +63,7 @@ const PatientDashboard = () => {
                   icon={FileText}
                   trend="Uploaded to your account"
                   trendUp={true}
+                  infoText="Total number of medical reports you have uploaded to your profile."
                 />
                 <StatCard
                   title="Risk Alerts"
@@ -64,11 +71,13 @@ const PatientDashboard = () => {
                   icon={AlertTriangle}
                   trend="Abnormal results"
                   trendUp={false}
+                  infoText="Reports identified with abnormal findings or requiring attention."
                 />
                 <StatCard
                   title="Last Report"
                   value={dashboardData?.dashboard.lastReportDate ? new Date(dashboardData.dashboard.lastReportDate).toLocaleDateString() : "No reports"}
                   icon={Calendar}
+                  infoText="Date of your most recently uploaded medical report."
                 />
               </div>
 
@@ -144,7 +153,19 @@ const PatientDashboard = () => {
               {/* Medical Insights */}
               <div className="grid grid-cols-1  gap-6">
                 <Card className="p-6">
-                  <h3 className="text-lg font-bold text-foreground mb-4">Health Activity</h3>
+                  <div className="flex items-center gap-2 mb-4">
+                    <h3 className="text-lg font-bold text-foreground">Health Activity</h3>
+                    <TooltipProvider>
+                      <UiTooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="h-4 w-4 text-muted-foreground/50 cursor-pointer hover:text-primary transition-colors" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p className="max-w-[200px] text-xs">Overview of your activity over time based on report uploads and visits.</p>
+                        </TooltipContent>
+                      </UiTooltip>
+                    </TooltipProvider>
+                  </div>
                   <div className="h-64 w-full">
                     {trendData.length > 0 ? (
                       <ResponsiveContainer width="100%" height="100%">
