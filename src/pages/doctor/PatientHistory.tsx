@@ -36,6 +36,7 @@ import {
   FileText,
   Calendar,
   Filter,
+  Download,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import ReportAnalysisResult from "@/components/ReportAnalysisResult";
@@ -139,6 +140,44 @@ const PatientHistory = () => {
   const handleViewDetails = (report: Report) => {
     setSelectedReport(report);
     setDialogOpen(true);
+  };
+
+  const handleDownloadReport = async (report: Report) => {
+    try {
+      toast({
+        title: "Download Started",
+        description: "Your report is being downloaded...",
+      });
+
+      const response = await api.get(`/report/${report._id}/download`, {
+        responseType: 'blob',
+      });
+
+      // Create a temporary URL for the blob
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${report.reportName}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      
+      // Cleanup
+      link.parentNode?.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast({
+        title: "Download Complete",
+        description: "Report downloaded successfully",
+        variant: "default",
+      });
+    } catch (error) {
+      console.error("Download failed:", error);
+      toast({
+        title: "Download Failed",
+        description: "Could not download the report. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const getStatusBadge = (status: string) => {
@@ -348,7 +387,20 @@ const PatientHistory = () => {
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{selectedReport?.reportName}</DialogTitle>
+            <DialogTitle className="flex justify-between items-center">
+              <span>{selectedReport?.reportName}</span>
+              {selectedReport && (
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="gap-2 h-8"
+                  onClick={() => handleDownloadReport(selectedReport)}
+                >
+                  <Download className="h-4 w-4" />
+                  Download PDF
+                </Button>
+              )}
+            </DialogTitle>
             <DialogDescription>
               Report Date: {selectedReport && new Date(selectedReport.reportDate).toLocaleDateString()}
             </DialogDescription>
