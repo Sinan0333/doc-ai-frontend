@@ -94,22 +94,44 @@ const ReviewReport = () => {
     }
   };
 
-  const handleDownloadReport = () => {
+  const handleDownloadReport = async () => {
     if (!report) return;
     
-    // Create a download link
-    const link = document.createElement('a');
-    link.href = `${import.meta.env.VITE_API_URL || 'http://localhost:3009'}/${report.filePath}`;
-    link.download = `${report.reportName}.pdf`;
-    link.target = '_blank';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    toast({
-      title: "Download Started",
-      description: "Your report is being downloaded",
-    });
+    try {
+      toast({
+        title: "Download Started",
+        description: "Your report is being downloaded...",
+      });
+
+      const response = await api.get(`/report/${report._id}/download`, {
+        responseType: 'blob',
+      });
+
+      // Create a temporary URL for the blob
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${report.reportName}.pdf`); // or extract filename from content-disposition
+      document.body.appendChild(link);
+      link.click();
+      
+      // Cleanup
+      link.parentNode?.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast({
+        title: "Download Complete",
+        description: "Report downloaded successfully",
+        variant: "default", // success
+      });
+    } catch (error) {
+      console.error("Download failed:", error);
+      toast({
+        title: "Download Failed",
+        description: "Could not download the report. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleSubmitReview = async () => {
