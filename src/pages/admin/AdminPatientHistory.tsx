@@ -34,6 +34,7 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
+import ReportAnalysisResult from "@/components/ReportAnalysisResult";
 
 const AdminPatientHistory = () => {
   const { patientId } = useParams<{ patientId: string }>();
@@ -290,25 +291,11 @@ const AdminPatientHistory = () => {
               </div>
 
               <div className="border-t pt-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="p-1.5 rounded-md bg-primary/10">
-                    <AlertCircle className="h-4 w-4 text-primary" />
-                  </div>
-                  <h4 className="font-bold text-lg">AI-Extracted Data Highlights</h4>
-                </div>
-                <div className="bg-card border rounded-xl overflow-hidden shadow-sm">
-                  <div className="p-4 bg-muted/50 border-b">
-                    <div className="flex items-center gap-2">
-                      <div className={`h-3 w-3 rounded-full ${selectedReport.isAbnormal ? 'bg-destructive' : 'bg-green-500'}`} />
-                      <span className="text-sm font-semibold">{selectedReport.isAbnormal ? 'Abnormal Findings Detected' : 'Normal Results'}</span>
-                    </div>
-                  </div>
-                  <div className="p-4">
-                    <pre className="text-xs whitespace-pre-wrap font-mono leading-relaxed max-h-[300px] overflow-y-auto">
-                      {JSON.stringify(selectedReport.analyzedData, null, 2)}
-                    </pre>
-                  </div>
-                </div>
+                <ReportAnalysisResult 
+                  data={selectedReport.analyzedData}
+                  reportName={selectedReport.reportName}
+                  reportType={selectedReport.reportType}
+                />
               </div>
 
               {selectedReport.doctorReview?.notes && (
