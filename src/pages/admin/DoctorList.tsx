@@ -7,6 +7,17 @@ import { Button } from "@/components/ui/button";
 import { Search, Stethoscope, Mail, Phone, Calendar, ArrowLeft, ArrowRight, UserPlus, Trash2 } from "lucide-react";
 import { AddDoctorModal } from "@/components/admin/AddDoctorModal";
 import { useNavigate } from "react-router-dom";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const DoctorList = () => {
   const navigate = useNavigate();
@@ -102,7 +113,7 @@ const DoctorList = () => {
                           </div>
                         </td>
                         <td className="py-4 px-6 text-right">
-						  <Button 
+                          <Button 
                             variant="outline" 
                             size="sm"
                             onClick={() => navigate(`/admin/doctors/${doctor._id}/activity`)}
@@ -110,17 +121,27 @@ const DoctorList = () => {
                           >
                             View Activity
                           </Button>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => {
-                              if (window.confirm("Are you sure you want to remove this doctor?")) {
-                                deleteDoctor(doctor._id);
-                              }
-                            }}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="destructive" size="sm">
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Delete Doctor</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Are you sure you want to remove Dr. {doctor.fullName}? This action will deactivate their account and prevent them from accessing the system.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => deleteDoctor(doctor._id)}>
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
                         </td>
                       </tr>
                     ))
