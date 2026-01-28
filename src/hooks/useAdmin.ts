@@ -41,6 +41,25 @@ export const useAddDoctor = () => {
   });
 };
 
+export const useDeleteDoctor = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (doctorId: string) => {
+      const response = await api.delete(`/admin/doctors/${doctorId}`);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["doctors"] });
+      toast.success("Doctor removed successfully");
+    },
+    onError: (error: any) => {
+      const message = error.response?.data?.message || "Failed to remove doctor";
+      toast.error(message);
+    }
+  });
+};
+
 export const useDoctorActivity = (doctorId: string, page = 1) => {
   return useQuery({
     queryKey: ["doctorActivity", doctorId, page],

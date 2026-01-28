@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { useDoctors } from "@/hooks/useAdmin";
+import { useDoctors, useDeleteDoctor } from "@/hooks/useAdmin";
 import Sidebar from "@/components/Sidebar";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Stethoscope, Mail, Phone, Calendar, ArrowLeft, ArrowRight, UserPlus } from "lucide-react";
+import { Search, Stethoscope, Mail, Phone, Calendar, ArrowLeft, ArrowRight, UserPlus, Trash2 } from "lucide-react";
 import { AddDoctorModal } from "@/components/admin/AddDoctorModal";
 import { useNavigate } from "react-router-dom";
 
@@ -13,6 +13,7 @@ const DoctorList = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const { data, isLoading } = useDoctors(page, 10, search);
+  const { mutate: deleteDoctor } = useDeleteDoctor();
 
   const doctors = data?.data || [];
   const pagination = data?.pagination || { page: 1, pages: 1, total: 0 };
@@ -101,12 +102,24 @@ const DoctorList = () => {
                           </div>
                         </td>
                         <td className="py-4 px-6 text-right">
-                          <Button 
+						  <Button 
                             variant="outline" 
                             size="sm"
                             onClick={() => navigate(`/admin/doctors/${doctor._id}/activity`)}
+                            className="mr-2"
                           >
                             View Activity
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => {
+                              if (window.confirm("Are you sure you want to remove this doctor?")) {
+                                deleteDoctor(doctor._id);
+                              }
+                            }}
+                          >
+                            <Trash2 className="h-4 w-4" />
                           </Button>
                         </td>
                       </tr>
