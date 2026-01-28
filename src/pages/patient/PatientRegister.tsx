@@ -5,7 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { Eye, EyeOff, Activity } from "lucide-react";
+import { Eye, EyeOff, Activity, Check, Info } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { toast } from "sonner";
 
 const PatientRegister = () => {
@@ -38,8 +44,11 @@ const PatientRegister = () => {
     }
     if (!formData.password) {
       newErrors.password = "Password is required";
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
+    } else {
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      if (!passwordRegex.test(formData.password)) {
+        newErrors.password = "Password does not meet requirements";
+      }
     }
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
@@ -130,7 +139,42 @@ const PatientRegister = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <div className="flex items-center gap-2 mb-2">
+                <Label htmlFor="password">Password</Label>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-4 w-4 text-muted-foreground/50 cursor-pointer hover:text-primary transition-colors" />
+                    </TooltipTrigger>
+                    <TooltipContent className="p-3 bg-popover text-popover-foreground border border-border shadow-md rounded-lg w-64">
+                      <div className="space-y-2 text-xs">
+                        <p className="font-medium mb-1">Password must contain:</p>
+                        <div className={`flex items-center gap-2 ${formData.password.length >= 8 ? "text-green-600" : "text-muted-foreground"}`}>
+                          {formData.password.length >= 8 ? <Check className="h-3 w-3" /> : <div className="h-1.5 w-1.5 rounded-full bg-muted-foreground/30 ml-1" />}
+                          <span>At least 8 characters</span>
+                        </div>
+                        <div className={`flex items-center gap-2 ${/[A-Z]/.test(formData.password) ? "text-green-600" : "text-muted-foreground"}`}>
+                          {/[A-Z]/.test(formData.password) ? <Check className="h-3 w-3" /> : <div className="h-1.5 w-1.5 rounded-full bg-muted-foreground/30 ml-1" />}
+                          <span>One uppercase letter</span>
+                        </div>
+                        <div className={`flex items-center gap-2 ${/[a-z]/.test(formData.password) ? "text-green-600" : "text-muted-foreground"}`}>
+                          {/[a-z]/.test(formData.password) ? <Check className="h-3 w-3" /> : <div className="h-1.5 w-1.5 rounded-full bg-muted-foreground/30 ml-1" />}
+                          <span>One lowercase letter</span>
+                        </div>
+                        <div className={`flex items-center gap-2 ${/\d/.test(formData.password) ? "text-green-600" : "text-muted-foreground"}`}>
+                          {/\d/.test(formData.password) ? <Check className="h-3 w-3" /> : <div className="h-1.5 w-1.5 rounded-full bg-muted-foreground/30 ml-1" />}
+                          <span>One number</span>
+                        </div>
+                        <div className={`flex items-center gap-2 ${/[@$!%*?&]/.test(formData.password) ? "text-green-600" : "text-muted-foreground"}`}>
+                          {/[@$!%*?&]/.test(formData.password) ? <Check className="h-3 w-3" /> : <div className="h-1.5 w-1.5 rounded-full bg-muted-foreground/30 ml-1" />}
+                          <span>One special character (@$!%*?&)</span>
+                        </div>
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+
               <div className="relative">
                 <Input
                   id="password"
@@ -149,8 +193,9 @@ const PatientRegister = () => {
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
+
               {errors.password && (
-                <p className="text-sm text-destructive">{errors.password}</p>
+                <p className="text-sm text-destructive mt-1">{errors.password}</p>
               )}
             </div>
 
