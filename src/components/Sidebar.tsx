@@ -16,14 +16,32 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
+import { doctorService } from "@/services/doctor.service";
+import { Badge } from "@/components/ui/badge";
+import { LucideIcon } from "lucide-react";
 
 interface SidebarProps {
   role: "patient" | "doctor" | "admin";
 }
 
+interface SidebarLink {
+  to: string;
+  icon: LucideIcon;
+  label: string;
+  badge?: number | string | null;
+}
+
 const Sidebar = ({ role }: SidebarProps) => {
   const { logout } = useAuth();
   const navigate = useNavigate();
+
+  const { data: pendingCount = 0 } = useQuery({
+    queryKey: ["pendingReviewCount"],
+    queryFn: () => doctorService.getPendingReviewCount(),
+    enabled: role === "doctor",
+    refetchInterval: 30000, // Refetch every 30 seconds
+  });
 
   const handleLogout = () => {
     logout();
@@ -32,7 +50,7 @@ const Sidebar = ({ role }: SidebarProps) => {
     else navigate("/admin/login");
   };
 
-  const patientLinks = [
+  const patientLinks: SidebarLink[] = [
     { to: "/patient/dashboard", icon: LayoutDashboard, label: "Dashboard" },
     { to: "/patient/upload", icon: Upload, label: "Upload Report" },
     { to: "/patient/history", icon: History, label: "History" },
@@ -40,15 +58,15 @@ const Sidebar = ({ role }: SidebarProps) => {
     { to: "/patient/profile", icon: User, label: "Profile" },
   ];
 
-  const doctorLinks = [
+  const doctorLinks: SidebarLink[] = [
     { to: "/doctor/dashboard", icon: LayoutDashboard, label: "Dashboard" },
     { to: "/doctor/patients", icon: Users, label: "Patient List" },
-    { to: "/doctor/review-requests", icon: ClipboardList, label: "Review Requests" },
+    { to: "/doctor/review-requests", icon: ClipboardList, label: "Review Requests", badge: pendingCount > 0 ? pendingCount : null },
     // { to: "/doctor/analytics", icon: BarChart3, label: "Analytics" },
     // { to: "/doctor/alerts", icon: AlertCircle, label: "Alerts" },
   ];
 
-  const adminLinks = [
+  const adminLinks: SidebarLink[] = [
     { to: "/admin/dashboard", icon: LayoutDashboard, label: "Dashboard" },
     { to: "/admin/doctors", icon: Users, label: "Doctor List" },
     { to: "/admin/patients", icon: Users, label: "Patient List" },
@@ -76,7 +94,7 @@ const Sidebar = ({ role }: SidebarProps) => {
             to={link.to}
             className={({ isActive }) =>
               cn(
-                "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
+                "group flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
                 "hover:bg-accent hover:text-accent-foreground",
                 isActive
                   ? "bg-primary text-primary-foreground"
@@ -84,8 +102,24 @@ const Sidebar = ({ role }: SidebarProps) => {
               )
             }
           >
-            <link.icon className="h-5 w-5" />
-            <span className="font-medium">{link.label}</span>
+            {({ isActive }) => (
+              <>
+                <link.icon className="h-5 w-5" />
+                <span className="font-medium flex-1">{link.label}</span>
+                {link.badge !== undefined && link.badge !== null && (
+                  <span
+                    className={cn(
+                      "px-1.5 py-0.5 min-w-[1.25rem] h-5 flex items-center justify-center rounded-full text-[10px] font-bold transition-colors",
+                      isActive
+                        ? "bg-destructive text-destructive-foreground shadow-sm"
+                        : "bg-destructive/10 text-destructive group-hover:bg-destructive/20"
+                    )}
+                  >
+                    {link.badge}
+                  </span>
+                )}
+              </>
+            )}
           </NavLink>
         ))}
       </nav>

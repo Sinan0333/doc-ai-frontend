@@ -48,5 +48,11 @@ export const doctorService = {
       dashboard: response.data.dashboard
     };
   },
+
+  // Get pending review count
+  getPendingReviewCount: async (): Promise<number> => {
+    const response = await api.get<{ success: boolean; count: number }>('/doctor/review-requests/count');
+    return response.data.count;
+  },
 };
 
